@@ -1571,6 +1571,7 @@ function! fugitive#BufReadStatus() abort
     nnoremap <buffer> <silent> ds :<C-U>execute <SID>StageDiff('Gsdiff')<CR>
     nnoremap <buffer> <silent> dp :<C-U>execute <SID>StageDiffEdit()<CR>
     nnoremap <buffer> <silent> dv :<C-U>execute <SID>StageDiff('Gvdiff')<CR>
+    nnoremap <buffer> <silent> dt :<C-U>execute <SID>StageDiffTab('Gvdiff', 1)<CR>
     nnoremap <buffer> <silent> J :<C-U>execute <SID>StageNext(v:count1)<CR>
     nnoremap <buffer> <silent> K :<C-U>execute <SID>StagePrevious(v:count1)<CR>
     nnoremap <buffer> <silent> P :<C-U>execute <SID>StagePatch(line('.'),line('.')+v:count1-1)<CR>
@@ -2383,9 +2384,18 @@ function! s:StageIntend(count) abort
 endfunction
 
 function! s:StageDiff(diff) abort
+  return s:StageDiffTab(a:diff, 0)
+endfunction
+
+function! s:StageDiff(diff, tab) abort
   let lnum = line('.')
   let info = s:StageInfo(lnum)
   let prefix = info.offset > 0 ? '+' . info.offset : ''
+
+  if a:tab ==# 1
+    tabedit %
+  endif
+
   if empty(info.filename) && info.section ==# 'Staged'
     return 'Git! diff --no-ext-diff --cached'
   elseif empty(info.filename)
