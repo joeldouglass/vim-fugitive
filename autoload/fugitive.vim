@@ -2387,7 +2387,7 @@ function! s:StageDiff(diff) abort
   return s:StageDiffTab(a:diff, 0)
 endfunction
 
-function! s:StageDiff(diff, tab) abort
+function! s:StageDiffTab(diff, tab) abort
   let lnum = line('.')
   let info = s:StageInfo(lnum)
   let prefix = info.offset > 0 ? '+' . info.offset : ''
